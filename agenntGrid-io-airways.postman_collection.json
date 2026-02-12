@@ -1,0 +1,199 @@
+{
+  "info": {
+    "name": "agenntGrid.io-airways API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Flights",
+      "item": [
+        {
+          "name": "List flights",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/flights"
+          }
+        },
+        {
+          "name": "Search flights",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/flights/search?origin=CDG&destination=JFK&start=2024-06-01T00:00:00&end=2024-06-02T00:00:00"
+          }
+        },
+        {
+          "name": "Create flight",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flightNumber\": \"AF999\",\n  \"airline\": \"Air France\",\n  \"origin\": \"CDG\",\n  \"destination\": \"JFK\",\n  \"departureDateTime\": \"2024-06-10T14:00:00\",\n  \"arrivalDateTime\": \"2024-06-10T16:30:00\",\n  \"totalSeats\": 200,\n  \"availableSeats\": 200,\n  \"price\": 450.0,\n  \"status\": \"SCHEDULED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/flights"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Passengers",
+      "item": [
+        {
+          "name": "List passengers",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/passengers"
+          }
+        },
+        {
+          "name": "Get passenger by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/passengers/1"
+          }
+        },
+        {
+          "name": "Get passenger by email",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/passengers/email/jean.dupont@email.com"
+          }
+        },
+        {
+          "name": "Get passenger by passport",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/passengers/passport/FRA987654321"
+          }
+        },
+        {
+          "name": "Create passenger",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jean\",\n  \"lastName\": \"Dupont\",\n  \"email\": \"jean.dupont+new@email.com\",\n  \"phoneNumber\": \"+33612345678\",\n  \"passportNumber\": \"FRA987654322\",\n  \"dateOfBirth\": \"1985-05-15\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/passengers"
+          }
+        },
+        {
+          "name": "Delete passenger",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/passengers/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flightId\": 1,\n  \"passengerId\": 1,\n  \"seatNumber\": \"12A\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/bookings"
+          }
+        },
+        {
+          "name": "Get booking by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bookings/1"
+          }
+        },
+        {
+          "name": "Get booking by reference",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bookings/reference/REF-AF102-001"
+          }
+        },
+        {
+          "name": "Cancel booking",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/bookings/1/cancel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Process payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": 1,\n  \"amount\": 450.0,\n  \"method\": \"CREDIT_CARD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/payments"
+          }
+        },
+        {
+          "name": "Get payment by id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/1"
+          }
+        }
+      ]
+    }
+  ]
+}
