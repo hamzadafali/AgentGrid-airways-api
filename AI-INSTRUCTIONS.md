@@ -1,0 +1,3 @@
+- **Persistence**: Use `reconstruct()` static methods to map from Entity to Domain.
+- **Value Objects**: Wrap primitives in domain types (Money, BookingReference, etc.).
+- **Testing**: JUnit 5 + AssertJ, 80% coverage required on domain package.

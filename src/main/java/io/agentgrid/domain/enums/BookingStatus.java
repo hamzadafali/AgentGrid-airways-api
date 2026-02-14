@@ -1,5 +1,5 @@
 package io.agentgrid.domain.enums;
 
 public enum BookingStatus {
-    PENDING, CONFIRMED, CANCELLED
+    PENDING, CREATED,CONFIRMED, CANCELLED,ISSUED
 }

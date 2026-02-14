@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +37,9 @@ class BookingServiceTest {
 
     @InjectMocks
     BookingService bookingService;
+
+    @Mock
+    SeatService seatService;
 
     private Flight flight;
     private Passenger passenger;
@@ -75,6 +79,45 @@ class BookingServiceTest {
 
         verify(flightRepo).save(any(Flight.class));
         verify(bookingRepo).save(any(Booking.class));
+    }
+
+    @Test
+    void createBooking_seatAlreadyReserved() {
+        when(flightRepo.findById(1L)).thenReturn(Optional.of(flight));
+        when(passengerRepo.findById(1L)).thenReturn(Optional.of(passenger));
+        when(bookingRepo.findAll()).thenReturn(List.of(
+                Booking.builder()
+                        .seatNumber("12A")
+                        .flight(flight)
+                        .status(BookingStatus.CONFIRMED)
+                        .build()
+        ));
+
+        assertThatThrownBy(() -> bookingService.createBooking(1L, 1L, "12A"))
+                .isInstanceOf(BookingException.class)
+                .hasMessage("Seat already reserved");
+
+        verify(flightRepo).findById(1L);
+        verify(passengerRepo).findById(1L);
+        verify(bookingRepo, never()).save(any());
+    }
+
+    @Test
+    void createBooking_reserveSeatFails() {
+        when(flightRepo.findById(1L)).thenReturn(Optional.of(flight));
+        when(passengerRepo.findById(1L)).thenReturn(Optional.of(passenger));
+        doThrow(new RuntimeException("Seat reservation error"))
+                .when(seatService).reserveSeat(1L, "12A");
+
+        assertThatThrownBy(() -> bookingService.createBooking(1L, 1L, "12A"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Seat reservation error");
+
+        verify(flightRepo).findById(1L);
+        verify(passengerRepo).findById(1L);
+        verify(seatService).reserveSeat(1L, "12A");
+        verify(flightRepo, never()).save(any());
+        verify(bookingRepo, never()).save(any());
     }
 
     @Test

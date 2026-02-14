@@ -21,6 +21,7 @@ public class BookingService {
     private final BookingRepository bookingRepo;
     private final FlightRepository flightRepo;
     private final PassengerRepository passengerRepo;
+    private final SeatService seatService;
 
     @Transactional
     public Booking createBooking(Long flightId, Long passengerId, String seatNumber) {
@@ -34,8 +35,18 @@ public class BookingService {
         Passenger passenger = passengerRepo.findById(passengerId)
                 .orElseThrow(() -> new BookingException("Passenger not found"));
 
+        // check if seat is already reserved
+        boolean seatTaken = bookingRepo.findAll().stream()
+                .filter(b -> b.getFlight().getId().equals(flightId))
+                .anyMatch(b -> b.getSeatNumber().equalsIgnoreCase(seatNumber) && b.getStatus() == BookingStatus.CONFIRMED);
+        if (seatTaken) {
+            throw new BookingException("Seat already reserved");
+        }
+
         // Update available seats
         flight.setAvailableSeats(flight.getAvailableSeats() - 1);
+        //make seat available
+        seatService.reserveSeat(flightId, seatNumber);
         flightRepo.save(flight);
 
         Booking booking = Booking.builder()
